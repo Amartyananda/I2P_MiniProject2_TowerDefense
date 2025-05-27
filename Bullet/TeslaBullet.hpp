@@ -12,5 +12,6 @@ class TeslaBullet : public Bullet {
 public:
     explicit TeslaBullet(Engine::Point position, Engine::Point forwardDirection, float rotation, Turret *parent);
     void OnExplode(Enemy *enemy) override;
+    void Update(float deltaTime) override;
 };
 #endif   // TeslaBullet_HPP

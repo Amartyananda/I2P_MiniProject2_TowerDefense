@@ -15,7 +15,7 @@ public:
     void Update(float deltaTime) override;
 
 private:
-    static constexpr float ExplosionRadius = 45.0f;
+    static constexpr float ExplosionRadius = 50.0f;
     static constexpr float SplashRatio    = 0.8f;
 };
 #endif   // EAGLEBULLET_HPP

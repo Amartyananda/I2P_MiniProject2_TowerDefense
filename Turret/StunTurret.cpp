@@ -9,8 +9,8 @@
 #include "StunTurret.hpp"
 #include "Scene/PlayScene.hpp"
 
-const int StunTurret::Price = 250;
-StunTurret::StunTurret(float x, float y) : Turret("play/tower-base.png", "play/StunTurret.png", x, y, 300, Price, 0.4) {
+const int StunTurret::Price = 350;
+StunTurret::StunTurret(float x, float y) : Turret("play/tower-base.png", "play/StunTurret.png", x, y, 175, Price, 1.2) {
     // Move center downward, since we the turret head is slightly biased upward.
     Anchor.y += 8.0f / GetBitmapHeight();  
 }
@@ -21,5 +21,5 @@ void StunTurret::CreateBullet() {
     Engine::Point normal = Engine::Point(-normalized.y, normalized.x);
     // Change bullet position to the front of the gun barrel.
     getPlayScene()->BulletGroup->AddNewObject(new StunBullet(Position + normalized * 36 - normal * 6, diff, rotation, this));
-    AudioHelper::PlayAudio("laser.wav");
+    AudioHelper::PlayAudio("stun.mp3");
 }

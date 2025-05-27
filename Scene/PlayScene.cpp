@@ -367,32 +367,27 @@ void PlayScene::OnKeyDown(int keyCode) {
     IScene::OnKeyDown(keyCode);
     if (keyCode == ALLEGRO_KEY_TAB) {
         DebugMode = !DebugMode;
-    } else {
+    }else {
         keyStrokes.push_back(keyCode);
         if (keyStrokes.size() > code.size())
             keyStrokes.pop_front();
     }
-    if (keyCode == ALLEGRO_KEY_Q) {
-        // Hotkey for MachineGunTurret.
-        UIBtnClicked(1);
-    } else if (keyCode == ALLEGRO_KEY_W) {
-        // Hotkey for LaserTurret.
-        UIBtnClicked(2);
+
+    switch(keyCode){
+        case ALLEGRO_KEY_Q: UIBtnClicked(1); break;
+        case ALLEGRO_KEY_W: UIBtnClicked(2); break;
+        case ALLEGRO_KEY_E: UIBtnClicked(3); break;
+        case ALLEGRO_KEY_R: UIBtnClicked(4); break;
+        case ALLEGRO_KEY_T: UIBtnClicked(5); break;
+        case ALLEGRO_KEY_SPACE: UIBtnClicked(0); break;
+        default : break;
     }
-    else if (keyCode == ALLEGRO_KEY_E) {
-        // Hotkey for LaserTurret.
-        UIBtnClicked(3);
-    }else if (keyCode == ALLEGRO_KEY_SPACE) {
-        // Hotkey for LaserTurret.
-        UIBtnClicked(0);
-    }
-    else if (keyCode >= ALLEGRO_KEY_0 && keyCode <= ALLEGRO_KEY_9) {
-        // Hotkey for Speed up.
-        SpeedMult = keyCode - ALLEGRO_KEY_0;
-    }else if (keyCode == ALLEGRO_KEY_ESCAPE && preview && preview->IsShovel()) {
+
+    if (keyCode >= ALLEGRO_KEY_0 && keyCode <= ALLEGRO_KEY_9) SpeedMult = keyCode - ALLEGRO_KEY_0;
+    else if (keyCode == ALLEGRO_KEY_ESCAPE && preview && preview->IsShovel()) {
         UIGroup->RemoveObject(preview->GetObjectIterator());
         preview = nullptr;
-        return;  // swallow this key
+        return;
     }
 
     if (keyStrokes.size() == code.size() && std::equal(code.begin(), code.end(), keyStrokes.begin())) {
@@ -493,8 +488,8 @@ void PlayScene::ConstructUI() {
             {1304, 176, MachineGunTurret::Price,    1, "play/turret-1.png"},
             {1380, 176, LaserTurret::Price,         2, "play/turret-2.png"},
             {1456, 176, EagleTurret::Price,         3, "play/eagle.png"   },
-            {1304, 272, StunTurret::Price,          4, "play/StunTurret.png"},
-            {1380, 272, TeslaTurret::Price,          5, "play/TeslaTurret.png"}
+            {1304, 272, TeslaTurret::Price,         4, "play/TeslaTurret.png"},
+            {1380, 272, StunTurret::Price,          5, "play/StunTurret.png"}
         };
 
     for (auto &b : btns) {
@@ -519,8 +514,11 @@ void PlayScene::ConstructUI() {
 }
 
 void PlayScene::UIBtnClicked(int id) {
-    if (preview)
+    if (preview){
         UIGroup->RemoveObject(preview->GetObjectIterator());
+        preview = nullptr;
+    }
+    
     switch (id) {
         case 0:
             preview = new Shovel(0,0);
@@ -538,12 +536,12 @@ void PlayScene::UIBtnClicked(int id) {
                 preview = new EagleTurret(0,0);
             break;
         case 4:
-            if (money >= StunTurret::Price)
-                preview = new StunTurret(0,0);
-            break;
-        case 5:
             if (money >= TeslaTurret::Price)
                 preview = new TeslaTurret(0,0);
+            break;
+        case 5:
+            if (money >= StunTurret::Price)
+                preview = new StunTurret(0,0);
             break;
     }
     if (!preview)
@@ -596,13 +594,12 @@ std::vector<std::vector<int>> PlayScene::CalculateBFSDistance() {
         Engine::Point p = q.front(); q.pop();
         int d = dist[p.y][p.x];
 
-        for (auto dir : directions) {                 // 4-connected moves
+        for (auto dir : directions) {
             int nx = p.x + dir.x;
             int ny = p.y + dir.y;
             if (nx < 0 || nx >= MapWidth || ny < 0 || ny >= MapHeight) continue;
             if (mapState[ny][nx] != TILE_DIRT) continue;
-            if (dist[ny][nx] != -1)                   // already visited
-                continue;
+            if (dist[ny][nx] != -1)            continue;
 
             dist[ny][nx] = d + 1;
             q.emplace(nx, ny);

@@ -16,6 +16,7 @@ namespace Engine {
     protected:
         // Determines whether mouse is in the button.
         bool mouseIn = false;
+        bool hovered = false;
         // The smart pointer that points to bitmap for mouse-out display.
         std::shared_ptr<ALLEGRO_BITMAP> imgOut;
         // The smart pointer that points to bitmap for mouse-in display.

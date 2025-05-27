@@ -13,6 +13,7 @@
 #include "UI/Component/ImageButton.hpp"
 #include "UI/Component/Label.hpp"
 #include "UI/Component/Slider.hpp"
+#include "Version.hpp" 
 
 void StartScene::Initialize() {
     // resources load
@@ -35,6 +36,7 @@ void StartScene::Initialize() {
         AddNewObject(new Engine::Label(text, "pirulen.ttf", 48, cx, cy, 0, 0, 0, 255, 0.5, 0.5));
     };
 
+    AddNewObject(new Engine::Label(std::string("Version: ") + GAME_VERSION, "pirulen.ttf", 18, 30, scr.y - 30, 255, 255, 255, 160, 0.0f, 1.0f));
     const int playY       = halfY - (BTN_H + GAP) + 150;
     const int scoreboardY = halfY + 150;
     const int settingsY   = halfY + (BTN_H + GAP) + 150;

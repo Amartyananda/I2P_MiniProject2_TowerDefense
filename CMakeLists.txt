@@ -5,12 +5,24 @@ set(CMAKE_CXX_STANDARD 17)
 
 include_directories(.)
 include_directories(Resource)
+include_directories(${CMAKE_BINARY_DIR}/generated)
 
 file(COPY Resource/audios DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY Resource/fonts DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY Resource/images DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY Resource DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY allegro_monolith-5.2.dll DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+execute_process(
+    COMMAND  git describe --tags --always --dirty
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    OUTPUT_VARIABLE   GIT_VERSION
+    OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+configure_file(
+    ${CMAKE_SOURCE_DIR}/Version.hpp.in
+    ${CMAKE_BINARY_DIR}/generated/Version.hpp      # output location
+    @ONLY)                                         # only replace tokens
 
 add_executable(2025_I2P2_TowerDefense
     Bullet/Bullet.cpp

@@ -21,6 +21,10 @@ protected:
     PlayScene *getPlayScene();
     virtual void OnExplode();
 
+    float stunTimer = 0.0f;
+    float slowTimer = 0.0f;
+    float slowFactor = 1.0f;
+
 public:
     float reachEndTime;
     std::list<Turret *> lockedTurrets;
@@ -31,6 +35,11 @@ public:
     void Update(float deltaTime) override;
     void Draw() const override;
     void Heal(float amount);
+
     int GetMaxHP() const {return MAXhp;}
+    void Stun(float dur) { stunTimer = std::max(stunTimer, dur); }
+    void Slow(float factor, float dur) { slowFactor = std::min(slowFactor, factor); slowTimer = std::max(slowTimer, dur); }
+    bool IsStunned()     const { return stunTimer > 0.0f; }
+    bool IsSlowed()      const { return slowTimer > 0.0f; }
 };
 #endif   // ENEMY_HPP

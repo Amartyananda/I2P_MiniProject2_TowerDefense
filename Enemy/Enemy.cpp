@@ -86,7 +86,23 @@ void Enemy::UpdatePath(const std::vector<std::vector<int>> &mapDistance) {
 }
 void Enemy::Update(float deltaTime) {
     // Pre-calculate the velocity.
-    float remainSpeed = speed * deltaTime;
+    if (stunTimer > 0.0f) {
+        stunTimer -= deltaTime;
+        if (stunTimer < 0.0f) stunTimer = 0.0f;
+        return;
+    }
+
+    float speedModifier = 1.0f;
+    if (slowTimer > 0.0f) {
+        slowTimer -= deltaTime;
+        if (slowTimer < 0.0f) {
+            slowTimer  = 0.0f;
+            slowFactor = 1.0f;
+        }
+        speedModifier = slowFactor;   // e.g. 0.5 → half speed
+    }
+
+    float remainSpeed = speed * speedModifier * deltaTime;
     while (remainSpeed != 0) {
         if (path.empty()) {
             // Reach end point.
@@ -118,9 +134,14 @@ void Enemy::Update(float deltaTime) {
 }
 
 void Enemy::Draw() const {
+    ALLEGRO_COLOR originalTint = Tint;
+    
+    if (stunTimer > 0.0f) const_cast<Enemy*>(this)->Tint = al_map_rgb(200, 180, 0);
+    if (slowTimer > 0.0f) const_cast<Enemy*>(this)->Tint = al_map_rgb(80, 140, 255);
     Sprite::Draw();
 
-        if (hp > 0) {
+    const_cast<Enemy*>(this)->Tint = originalTint;
+    if (hp > 0) {
         const float barW   = 40;      // width  of the bar (pixels)
         const float barH   =  6;      // height of the bar
         const float yOff   = CollisionRadius + 12;      // 12 px above sprite
